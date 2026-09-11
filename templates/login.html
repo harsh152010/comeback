@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --plum-deep: #2c0a1f;
+        --plum-mid: #4a1030;
+        --wine: #6e1638;
+        --rose-gold: #e8a6a0;
+        --blush: #f4c9c2;
+        --cream: #fff2e6;
+        --gold: #d9a566;
+        --gold-glow: rgba(232, 166, 160, 0.4);
+        --error: #ff9d8a;
+        --font-display: "Great Vibes", cursive;
+        --font-serif: "Playfair Display", serif;
+        --font-body: "Cormorant Garamond", serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        background: radial-gradient(ellipse at top, var(--plum-mid) 0%, var(--plum-deep) 60%, #170410 100%);
+        color: var(--cream);
+        font-family: var(--font-body);
+        line-height: 1.6;
+      }
+      button {
+        font-family: inherit;
+      }
+
+      /* ---------- ambient texture ---------- */
+      #bgFlecks {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        background-image: radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.5), transparent),
+          radial-gradient(1px 1px at 70% 60%, rgba(255, 255, 255, 0.4), transparent),
+          radial-gradient(1.5px 1.5px at 40% 80%, rgba(255, 255, 255, 0.4), transparent),
+          radial-gradient(1px 1px at 85% 20%, rgba(255, 255, 255, 0.5), transparent),
+          radial-gradient(1.5px 1.5px at 55% 10%, rgba(255, 255, 255, 0.4), transparent),
+          radial-gradient(1px 1px at 10% 65%, rgba(255, 255, 255, 0.4), transparent);
+        background-repeat: repeat;
+        background-size: 400px 400px;
+        opacity: 0.6;
+      }
+
+      /* ---------- falling gold dust (behind the card) ---------- */
+      #bgSparkle {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .sparkle {
+        position: absolute;
+        top: -5%;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 6px var(--gold-glow);
+        animation-name: fallSparkle;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+      @keyframes fallSparkle {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.7;
+        }
+        50% {
+          transform: translateY(55vh) translateX(12px);
+        }
+        90% {
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(112vh) translateX(-10px);
+          opacity: 0;
+        }
+      }
+
+      /* ---------- falling petals/hearts (behind the card) ---------- */
+      #bgBits {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .bit {
+        position: absolute;
+        top: -8%;
+        opacity: 0.9;
+        color: var(--rose-gold);
+        animation-name: fallBit;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        filter: drop-shadow(0 0 6px var(--gold-glow));
+      }
+      @keyframes fallBit {
+        0% {
+          transform: translateY(0) translateX(0) rotate(0deg);
+          opacity: 0;
+        }
+        8% {
+          opacity: 0.75;
+        }
+        30% {
+          transform: translateY(35vh) translateX(18px) rotate(90deg);
+        }
+        60% {
+          transform: translateY(70vh) translateX(-16px) rotate(200deg);
+        }
+        88% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(115vh) translateX(10px) rotate(320deg);
+          opacity: 0;
+        }
+      }
+
+      /* ---------- decorative floaties ---------- */
+      .login-decor {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .login-decor .floaty {
+        position: absolute;
+        font-size: 1.4rem;
+        opacity: 0.75;
+        animation: floatDrift 5.5s ease-in-out infinite;
+        filter: drop-shadow(0 0 8px var(--gold-glow));
+      }
+      .lf1 {
+        top: 13%;
+        left: 10%;
+        font-size: 1.6rem;
+      }
+      .lf2 {
+        top: 20%;
+        right: 12%;
+        animation-delay: 0.8s;
+        font-size: 1.25rem;
+      }
+      .lf3 {
+        bottom: 22%;
+        left: 14%;
+        animation-delay: 1.6s;
+        font-size: 1.3rem;
+      }
+      .lf4 {
+        bottom: 28%;
+        right: 10%;
+        animation-delay: 0.4s;
+        font-size: 1.15rem;
+      }
+      @keyframes floatDrift {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-16px) rotate(8deg);
+        }
+      }
+
+      /* ---------- login screen ---------- */
+      .login-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        text-align: center;
+        padding: 2rem;
+      }
+      .login-content {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+        animation: loginEntrance 0.9s cubic-bezier(0.34, 1.2, 0.4, 1) 0.15s forwards;
+      }
+      @keyframes loginEntrance {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .login-icon {
+        font-size: 2.4rem;
+        filter: drop-shadow(0 0 18px var(--gold-glow));
+        animation: pulseHeart 2.4s ease-in-out infinite;
+      }
+      @keyframes pulseHeart {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      .login-flourish {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .flourish-line {
+        width: 30px;
+        height: 1px;
+        background: rgba(232, 166, 160, 0.4);
+      }
+      .flourish-dot {
+        color: var(--rose-gold);
+        font-size: 0.85rem;
+      }
+      .login-eyebrow {
+        font-family: var(--font-serif);
+        font-size: 0.72rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 500;
+      }
+      .login-title {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: clamp(2.2rem, 8vw, 3.2rem);
+        color: var(--cream);
+        text-shadow: 0 0 30px var(--gold-glow);
+        margin-bottom: 0.2rem;
+        line-height: 1.15;
+      }
+      .login-sub {
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--blush);
+        font-size: 0.95rem;
+        max-width: 340px;
+        opacity: 0.9;
+        margin-bottom: 0.4rem;
+      }
+      .login-form {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+        width: 100%;
+        max-width: 320px;
+        padding: 2.1rem 1.9rem;
+        border: 1px solid rgba(232, 166, 160, 0.3);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(8px);
+      }
+      .login-field-label {
+        align-self: flex-start;
+        font-family: var(--font-serif);
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: -0.4rem;
+      }
+      .login-input-wrap {
+        position: relative;
+        width: 100%;
+      }
+      .login-input {
+        width: 100%;
+        padding: 0.85rem 3.2rem 0.85rem 1.2rem;
+        border-radius: 10px;
+        border: 1.5px solid rgba(232, 166, 160, 0.3);
+        background: rgba(255, 242, 230, 0.06);
+        color: var(--cream);
+        font-family: var(--font-body);
+        font-size: 1.05rem;
+        letter-spacing: 2px;
+        text-align: left;
+        outline: none;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+      }
+      .login-input::placeholder {
+        color: rgba(255, 242, 230, 0.35);
+        letter-spacing: normal;
+        font-size: 0.9rem;
+      }
+      .login-input:focus {
+        border-color: var(--rose-gold);
+        box-shadow: 0 0 0 3px rgba(232, 166, 160, 0.15);
+      }
+      .login-input.shake {
+        animation: loginShake 0.4s ease;
+        border-color: var(--error);
+      }
+      @keyframes loginShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-8px);
+        }
+        75% {
+          transform: translateX(8px);
+        }
+      }
+      .toggle-pass {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+        font-family: var(--font-serif);
+        font-weight: 600;
+        color: var(--rose-gold);
+      }
+      .btn-primary {
+        width: 100%;
+        font-family: var(--font-serif);
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.88rem 2.2rem;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(120deg, var(--wine), #8a1f4d);
+        color: var(--cream);
+        cursor: pointer;
+        box-shadow: 0 12px 30px rgba(110, 22, 56, 0.4);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        font-size: 0.95rem;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 36px rgba(110, 22, 56, 0.55);
+      }
+      .login-error {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 0.8rem;
+        color: var(--error);
+        min-height: 1.1em;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+      .login-error.show {
+        opacity: 1;
+      }
+      .login-hint {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 0.75rem;
+        color: rgba(255, 242, 230, 0.45);
+      }
+      .login-footer {
+        position: relative;
+        z-index: 3;
+        font-family: var(--font-serif);
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 242, 230, 0.35);
+      }
+
+      button:focus-visible,
+      .login-input:focus-visible,
+      .toggle-pass:focus-visible {
+        outline: 2px solid var(--rose-gold);
+        outline-offset: 3px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bgFlecks"></div>
+    <div id="bgSparkle"></div>
+    <div id="bgBits"></div>
+
+    <div class="login-screen" id="loginScreen">
+      <div class="login-decor" aria-hidden="true">
+        <span class="floaty lf1">🌸</span>
+        <span class="floaty lf2">🤍</span>
+        <span class="floaty lf3">💌</span>
+        <span class="floaty lf4">✨</span>
+      </div>
+      <div class="login-content">
+        <div class="login-icon">🔒</div>
+        <p class="login-eyebrow">Sirf Tumhare Liye</p>
+        <h1 class="login-title">Yeh Jagah Khaas Hai</h1>
+        <span class="login-flourish" aria-hidden="true">
+          <span class="flourish-line"></span>
+          <span class="flourish-dot">♡</span>
+          <span class="flourish-line"></span>
+        </span>
+        <p class="login-sub">Enter karne ke liye aapna legendary password daalo babuu 🥰💗</p>
+
+        <!-- Flask route pe POST hoga. Jaise: @app.route('/login', methods=['POST'])
+             form.password Flask mein request.form['password'] se milega. -->
+        <form class="login-form" id="loginForm" method="POST" action="/login" autocomplete="off">
+          <span class="login-field-label">Secret Word</span>
+          <div class="login-input-wrap">
+            <input
+              type="password"
+              class="login-input"
+              id="loginInput"
+              name="password"
+              placeholder="hamara secret password bacchuu 😘"
+              autocomplete="off"
+              required
+            />
+            <button type="button" class="toggle-pass" id="togglePass">SHOW</button>
+          </div>
+          <button type="submit" class="btn-primary">Andar Aao</button>
+          <!-- Agar Flask galat password pe isi template ko error=True ke saath render kare,
+               to Jinja se yeh line use karlo:
+               <p class="login-error {% if error %}show{% endif %}">{{ error or '' }}</p>
+               Abhi ke liye plain static rakha hai. -->
+          <p class="login-error {% if error %}show{% endif %}" id="loginError">
+  {{ error or '' }}
+</p>
+          <p class="login-hint">Hint: sirf tumhe pata hai 😉</p>
+        </form>
+      </div>
+    </div>
+
+    <p class="login-footer">a little something</p>
+
+    <script>
+      const BG_BITS = ["❤️", "🌸", "🤍", "✨", "💌", "🧸", "💕", "💗"];
+
+      function generateBgBits(containerId, count) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        for (let i = 0; i < count; i++) {
+          const b = document.createElement("div");
+          b.className = "bit";
+          b.textContent = BG_BITS[Math.floor(Math.random() * BG_BITS.length)];
+          const size = 1.1 + Math.random() * 1.1;
+          b.style.fontSize = size + "rem";
+          b.style.left = Math.random() * 100 + "%";
+          b.style.animationDuration = 7 + Math.random() * 7 + "s";
+          b.style.animationDelay = Math.random() * 10 + "s";
+          container.appendChild(b);
+        }
+      }
+
+      function generateSparkles(containerId, count) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        for (let i = 0; i < count; i++) {
+          const s = document.createElement("div");
+          s.className = "sparkle";
+          const size = 2 + Math.random() * 2.5;
+          s.style.width = size + "px";
+          s.style.height = size + "px";
+          s.style.left = Math.random() * 100 + "%";
+          s.style.animationDuration = 6 + Math.random() * 6 + "s";
+          s.style.animationDelay = Math.random() * 8 + "s";
+          container.appendChild(s);
+        }
+      }
+
+      generateBgBits("bgBits", 24);
+      generateSparkles("bgSparkle", 35);
+
+      // password show/hide toggle
+      const toggleBtn = document.getElementById("togglePass");
+      const loginInput = document.getElementById("loginInput");
+      toggleBtn.addEventListener("click", () => {
+        const isPass = loginInput.type === "password";
+        loginInput.type = isPass ? "text" : "password";
+        toggleBtn.textContent = isPass ? "HIDE" : "SHOW";
+      });
+
+      // Submit pe halka sa "pop" feedback (button click ke baad Flask redirect handle karega)
+      const form = document.getElementById("loginForm");
+      const submitBtn = form.querySelector(".btn-primary");
+      form.addEventListener("submit", () => {
+        submitBtn.style.transform = "scale(0.94)";
+      });
+
+      // Agar URL mein ?error=1 ho (Flask redirect karke bhi bhej sakta hai galat password pe),
+      // to error dikhado aur input shake karado.
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("error")) {
+        const error = document.getElementById("loginError");
+        error.classList.add("show");
+        loginInput.classList.add("shake");
+        loginInput.value = "";
+      }
+    </script>
+  </body>
+</html>
